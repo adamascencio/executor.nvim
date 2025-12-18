@@ -56,3 +56,29 @@ local function open_float(lines, title)
 
     return buf, win
 end
+
+local function run_cmd(cmd_table, buf)
+    local on_exit = function(res)
+        local out = {}
+
+        local function add_block(label, text)
+            if text and text ~= "" then
+                table.insert(out, label)
+                for line in (text .. "\n"):gmatch("(.-)\n") do
+                    table.insert(out, line)
+                end
+                table.insert(out, "")
+            end
+        end
+
+        add_block("=== STDOUT ===", res.stdout)
+        add_block("=== STDERR ===", res.stderr)
+        add_block("=== EXIT CODE ===", res.code)
+
+        vim.schedule(function()
+            vim.api.nvim_buf_set_lines(buf, 0, -1, false, out)
+        end)
+    end
+
+    vim.system(cmd_table, { text = true }, on_exit)
+end
