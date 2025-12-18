@@ -10,3 +10,14 @@ local function get_curr_file()
     }
     return file
 end
+
+local function get_run_cmd(filepath, filetype)
+    local ft_cmd = {
+        python = { "python", filepath },
+        lua = { "lua", filepath },
+        javascript = { "node", filepath },
+        typescript = { "node", filepath },
+        go = { "go", "run", filepath },
+    }
+    return ft_cmd[filetype]
+end
