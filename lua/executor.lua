@@ -82,3 +82,13 @@ local function run_cmd(cmd_table, buf)
 
     vim.system(cmd_table, { text = true }, on_exit)
 end
+
+M.run = function()
+    local curr_file = get_curr_file()
+    local cmd_table = get_run_cmd(curr_file.fp, curr_file.ft)
+    local buf, _ =
+        open_float({ "Running: " .. table.concat(cmd_table, " "), "..." }, "File Executor")
+    run_cmd(cmd_table, buf)
+end
+
+return M
